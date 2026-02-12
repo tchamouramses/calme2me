@@ -1,0 +1,16 @@
+.env
+.env.*.local
+.env.*.secret
+node_modules/
+dist/
+/vendor/
+/storage/logs/*
+/bootstrap/cache/*
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.log
+docker-compose.override.yml

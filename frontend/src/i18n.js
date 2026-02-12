@@ -1,0 +1,522 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+const resources = {
+  en: {
+    translation: {
+      app: {
+        title: 'Real-time mental wellness',
+        brand: 'calme2me',
+      },
+      tabs: {
+        feed: 'Live feed',
+        admin: 'Admin',
+      },
+      home: {
+        tagline: 'Anonymous support, live and safe',
+        headline: 'Share your story. The community listens in real time.',
+        description: 'Every message is moderated by AI before appearing in the feed so the space stays kind.',
+        pseudo: 'Pseudo',
+        pseudoPlaceholder: 'Choose a kind nickname',
+        enterFeed: 'Enter the feed',
+        pseudoRequired: 'Please choose a pseudo to continue.',
+        changePseudo: 'Change pseudo',
+        currentPseudo: 'Your pseudo',
+        openProblemModal: 'Share a problem now',
+        directProblemPage: 'Open the direct page',
+      },
+      nav: {
+        language: 'Language',
+        changePseudo: 'Change pseudo',
+        setPseudo: 'Set pseudo',
+      },
+      feed: {
+        title: 'Live feed',
+        description: 'Messages appear instantly after AI moderation. Keep it kind.',
+        noPosts: 'No posts yet. Be the first to share.',
+        comments: 'Comments',
+        showComments: 'Show comments',
+        hideComments: 'Hide comments',
+        noComments: 'No comments yet. Be the first to comment.',
+        openDetails: 'Open details',
+        loadMoreComments: 'Load more comments',
+      },
+      input: {
+        message: 'Message',
+        messagePlaceholder: 'Explain what you are going through',
+        commentPlaceholder: 'Add a supportive comment...',
+        submit: 'Send securely',
+        comment: 'Comment',
+        submitting: 'Moderating...',
+        disclaimer: 'Messages are checked by AI before they appear in the live feed.',
+        public: 'Public',
+        private: 'Private',
+        visibility: 'Visibility',
+        requirePseudo: 'Add a pseudo before posting or commenting.',
+        setPseudo: 'Set pseudo',
+      },
+      pseudoModal: {
+        title: 'Choose your anonymous pseudo',
+        subtitle: 'Your pseudo is shown to others. Keep it kind and safe.',
+        save: 'Save pseudo',
+        suggestions: 'Suggestions',
+        refresh: 'Refresh',
+        lockedNote: 'You need a pseudo before you can use the app.',
+      },
+      problemDetail: {
+        kicker: 'Direct response',
+        title: 'Problem details',
+        subtitle: 'Reply directly to this problem with a supportive comment.',
+        back: 'Back to feed',
+        loading: 'Loading problem...',
+        comments: 'Comments',
+        publicLabel: 'Published',
+      },
+      problemModal: {
+        kicker: 'Share safely',
+        title: 'Post a problem',
+        subtitle: 'Tell the community what you are going through. It will be moderated first.',
+      },
+      problemPage: {
+        title: 'Share a problem',
+        subtitle: 'Use this page when you want to send a direct link to someone.',
+      },
+      common: {
+        close: 'Close',
+        backToHome: 'Back to Home',
+      },
+      admin: {
+        title: 'Admin dashboard',
+        description: 'Review incoming posts, publish the best ones, or archive the rest.',
+        pseudo: 'Pseudo',
+        titleCol: 'Title',
+        status: 'Status',
+        actions: 'Actions',
+        loading: 'Loading...',
+        noProblems: 'No problems found.',
+        copyWhatsApp: 'Copy to WhatsApp',
+        copyLink: 'Copy link',
+        copied: 'Copied to WhatsApp format.',
+        linkCopied: 'Direct link copied.',
+        copyFailed: 'Unable to copy.',
+        statuses: {
+          waiting: 'Waiting',
+          published: 'Published',
+          archived: 'Archived',
+        },
+      },
+      auth: {
+        login: 'Login',
+        logout: 'Logout',
+        email: 'Email',
+        password: 'Password',
+        rememberMe: 'Remember me',
+        submit: 'Sign in',
+        adminAccess: 'Admin Access',
+        adminRequired: 'You must be logged in to access the admin dashboard.',
+      },
+      errors: {
+        network: 'Network error. Please try again.',
+        updateStatus: 'Unable to update status.',
+      },
+      footer: {
+        tagline: 'Anonymous support in real time',
+        about: 'About',
+        privacy: 'Privacy Policy',
+        terms: 'Terms of Service',
+        whatsapp: 'Join WhatsApp',
+        copyright: 'All rights reserved.',
+      },
+      about: {
+        title: 'About calme2me',
+        mission: {
+          title: 'Our Mission',
+          content: 'calme2me is dedicated to providing a safe, anonymous, and supportive space where anyone can share their struggles and receive genuine support from a caring community. We believe that everyone deserves to be heard, and that peer support can make a real difference in people\'s lives.',
+        },
+        vision: {
+          title: 'Our Vision',
+          content: 'We envision a world where mental health support is accessible to everyone, regardless of their circumstances. Through technology and community, we aim to break down barriers to seeking help and create a culture where opening up is normalized and celebrated.',
+        },
+        values: {
+          intro: 'calme2me is built on three core values:',
+          item1: {
+            title: 'Anonymity',
+            desc: 'Your privacy is paramount. Share freely without fear of judgment or identification.',
+          },
+          item2: {
+            title: 'Safety',
+            desc: 'Our AI moderation system ensures a kind and respectful environment for all members.',
+          },
+          item3: {
+            title: 'Community',
+            desc: 'Real people, real support. We believe in the power of collective empathy and understanding.',
+          },
+        },
+        features: {
+          intro: 'What makes calme2me special:',
+          item1: 'Share problems anonymously with a supportive community',
+          item2: 'AI-moderated content to maintain a safe space',
+          item3: 'Real-time updates and instant community feedback',
+          item4: 'Multiple language support for global accessibility',
+          item5: 'React to messages to show support and empathy',
+          item6: 'Join our WhatsApp channel for closer community connection',
+        },
+        cta: {
+          title: 'Join Our Community',
+          content: 'Ready to share your story and support others? Join thousands of people finding comfort and strength through calme2me.',
+          button: 'Share Your Story',
+        },
+      },
+      privacy: {
+        title: 'Privacy Policy',
+        lastUpdated: 'Last updated: February 12, 2026',
+        intro: {
+          title: 'Introduction',
+          content: 'At calme2me, we take your privacy seriously. This policy explains how we collect, use, and protect your personal information when you use our anonymous support platform.',
+        },
+        dataCollection: {
+          title: 'Data Collection',
+          content: 'We collect minimal data to provide our service:',
+          item1: 'Anonymous pseudonyms you choose',
+          item2: 'Messages and comments you post',
+          item3: 'Technical data like IP addresses for security purposes',
+        },
+        dataUsage: {
+          title: 'How We Use Your Data',
+          content: 'Your data is used to:',
+          item1: 'Display your messages and comments to the community',
+          item2: 'Moderate content using AI to maintain a safe environment',
+          item3: 'Improve our service and ensure platform security',
+        },
+        aiModeration: {
+          title: 'AI Moderation',
+          content: 'All messages are automatically reviewed by AI before publication to detect and prevent harmful content. This process is automated and helps maintain a supportive environment.',
+        },
+        anonymity: {
+          title: 'Anonymity',
+          content: 'We do not require or store personal identifying information (name, email, phone) for regular users. Your chosen pseudo is the only identifier visible to others. However, technical data like IP addresses may be logged for security purposes.',
+        },
+        cookies: {
+          title: 'Cookies and Local Storage',
+          content: 'We use browser local storage to save your pseudo and language preferences. No tracking cookies are used for advertising purposes.',
+        },
+        rights: {
+          title: 'Your Rights',
+          content: 'You have the right to access, modify, or delete any content you have posted. Since the platform is anonymous, you control your own pseudo and messages.',
+        },
+        contact: {
+          title: 'Contact Us',
+          content: 'For any questions about this privacy policy, please contact us through our WhatsApp channel.',
+        },
+      },
+      terms: {
+        title: 'Terms of Service',
+        lastUpdated: 'Last updated: February 12, 2026',
+        acceptance: {
+          title: 'Acceptance of Terms',
+          content: 'By accessing and using calme2me, you accept and agree to be bound by these Terms of Service. If you do not agree, please do not use our platform.',
+        },
+        service: {
+          title: 'Service Description',
+          content: 'calme2me is an anonymous real-time support platform where users can share their problems and receive community support. All content is moderated by AI before publication.',
+        },
+        userConduct: {
+          title: 'User Conduct',
+          content: 'You agree NOT to:',
+          item1: 'Post hateful, violent, or discriminatory content',
+          item2: 'Harass, threaten, or intimidate other users',
+          item3: 'Share personal information of yourself or others',
+          item4: 'Post spam, advertising, or irrelevant content',
+          item5: 'Attempt to circumvent our AI moderation system',
+        },
+        moderation: {
+          title: 'Content Moderation',
+          content: 'All messages are reviewed by AI before publication. We reserve the right to remove any content that violates these terms or is deemed inappropriate. Moderators may also manually review and remove content.',
+        },
+        anonymity: {
+          title: 'Anonymity and Pseudonyms',
+          content: 'Users must choose an anonymous pseudo. You are responsible for the content you post under your pseudo. Do not share personal information that could identify you or others.',
+        },
+        liability: {
+          title: 'Limitation of Liability',
+          content: 'calme2me is a peer support platform and is not a substitute for professional mental health services. We are not responsible for the advice or support provided by other users. In case of emergency, please contact appropriate professional services.',
+        },
+        termination: {
+          title: 'Termination',
+          content: 'We reserve the right to restrict or terminate access to users who violate these terms or engage in harmful behavior.',
+        },
+        changes: {
+          title: 'Changes to Terms',
+          content: 'We may update these terms from time to time. Continued use of the platform constitutes acceptance of updated terms.',
+        },
+        contact: {
+          title: 'Contact',
+          content: 'For questions about these terms, contact us through our WhatsApp channel.',
+        },
+      },
+    },
+  },
+  fr: {
+    translation: {
+      app: {
+        title: 'Bien-être mental en temps réel',
+        brand: 'calme2me',
+      },
+      tabs: {
+        feed: 'Fil en direct',
+        admin: 'Administration',
+      },
+      home: {
+        tagline: 'Soutien anonyme, en direct et sécurisé',
+        headline: 'Partagez votre histoire. La communauté écoute en temps réel.',
+        description: 'Chaque message est modéré par IA avant d\'apparaître dans le fil pour que l\'espace reste bienveillant.',
+        pseudo: 'Pseudo',
+        pseudoPlaceholder: 'Choisissez un surnom sympathique',
+        enterFeed: 'Accéder au fil',
+        pseudoRequired: 'Veuillez choisir un pseudo pour continuer.',
+        changePseudo: 'Changer de pseudo',
+        currentPseudo: 'Votre pseudo',
+        openProblemModal: 'Partager un problème',
+        directProblemPage: 'Ouvrir la page directe',
+      },
+      nav: {
+        language: 'Langue',
+        changePseudo: 'Changer de pseudo',
+        setPseudo: 'Définir un pseudo',
+      },
+      feed: {
+        title: 'Fil en direct',
+        description: 'Les messages apparaissent instantanément après modération IA. Restons bienveillants.',
+        noPosts: 'Aucun message pour le moment. Soyez le premier à partager.',
+        comments: 'Commentaires',
+        showComments: 'Afficher les commentaires',
+        hideComments: 'Masquer les commentaires',
+        noComments: 'Aucun commentaire pour le moment. Soyez le premier à commenter.',
+        openDetails: 'Voir le detail',        loadMoreComments: 'Charger plus de commentaires',      },
+      input: {
+        message: 'Message',
+        messagePlaceholder: 'Expliquez ce que vous vivez',
+        commentPlaceholder: 'Ajoutez un commentaire bienveillant...',
+        submit: 'Envoyer en sécurité',
+        comment: 'Commenter',
+        submitting: 'Modération...',
+        disclaimer: 'Les messages sont vérifiés par IA avant d\'apparaître dans le fil en direct.',
+        public: 'Public',
+        private: 'Privé',
+        visibility: 'Visibilité',
+        requirePseudo: 'Ajoutez un pseudo avant de publier ou commenter.',
+        setPseudo: 'Définir un pseudo',
+      },
+      pseudoModal: {
+        title: 'Choisissez votre pseudo anonyme',
+        subtitle: 'Votre pseudo est visible par les autres. Restez bienveillant.',
+        save: 'Enregistrer le pseudo',
+        suggestions: 'Suggestions',
+        refresh: 'Regenerer',
+        lockedNote: 'Vous devez definir un pseudo pour utiliser l\'application.',
+      },
+      problemDetail: {
+        kicker: 'Reponse directe',
+        title: 'Detail du probleme',
+        subtitle: 'Repondez directement a ce probleme avec un commentaire bienveillant.',
+        back: 'Retour au fil',
+        loading: 'Chargement du probleme...',
+        comments: 'Commentaires',
+        publicLabel: 'Publie',
+      },
+      problemModal: {
+        kicker: 'Partager en sécurité',
+        title: 'Publier un problème',
+        subtitle: 'Expliquez ce que vous vivez. Le message sera modéré avant publication.',
+      },
+      problemPage: {
+        title: 'Partager un problème',
+        subtitle: 'Utilisez cette page pour envoyer un lien direct aux utilisateurs.',
+      },
+      common: {
+        close: 'Fermer',
+        backToHome: 'Retour à l\'accueil',
+      },
+      admin: {
+        title: 'Tableau de bord administrateur',
+        description: 'Examinez les publications entrantes, publiez les meilleures ou archivez les autres.',
+        pseudo: 'Pseudo',
+        titleCol: 'Titre',
+        status: 'Statut',
+        actions: 'Actions',
+        loading: 'Chargement...',
+        noProblems: 'Aucun problème trouvé.',
+        copyWhatsApp: 'Copier vers WhatsApp',
+        copyLink: 'Copier le lien',
+        copied: 'Copié au format WhatsApp.',
+        linkCopied: 'Lien direct copie.',
+        copyFailed: 'Impossible de copier.',
+        statuses: {
+          waiting: 'En attente',
+          published: 'Publié',
+          archived: 'Archivé',
+        },
+      },
+      auth: {
+        login: 'Connexion',
+        logout: 'Déconnexion',
+        email: 'E-mail',
+        password: 'Mot de passe',
+        rememberMe: 'Se souvenir de moi',
+        submit: 'Se connecter',
+        adminAccess: 'Accès administrateur',
+        adminRequired: 'Vous devez être connecté pour accéder au tableau de bord administrateur.',
+      },
+      errors: {
+        network: 'Erreur réseau. Veuillez réessayer.',
+        updateStatus: 'Impossible de mettre à jour le statut.',
+      },
+      footer: {
+        tagline: 'Soutien anonyme en temps réel',
+        about: 'À propos',
+        privacy: 'Politique de confidentialité',
+        terms: 'Conditions d\'utilisation',
+        whatsapp: 'Rejoindre WhatsApp',
+        copyright: 'Tous droits réservés.',
+      },
+      about: {
+        title: 'À propos de calme2me',
+        mission: {
+          title: 'Notre Mission',
+          content: 'calme2me est dédiée à fournir un espace sûr, anonyme et bienveillant où chacun peut partager ses difficultés et recevoir un vrai soutien d\'une communauté attentionnée. Nous croyons que tout le monde mérite d\'être entendu et que l\'entraide peut faire une réelle différence dans la vie des gens.',
+        },
+        vision: {
+          title: 'Notre Vision',
+          content: 'Nous envisageons un monde où le soutien en santé mentale est accessible à tous, indépendamment de la situation. Grâce à la technologie et à la communauté, nous visons à abattre les barrières pour chercher de l\'aide et créer une culture où l\'ouverture est normalisée et célébrée.',
+        },
+        values: {
+          intro: 'calme2me est basée sur trois valeurs fondamentales:',
+          item1: {
+            title: 'Anonymat',
+            desc: 'Votre confidentialité est primordiale. Partagez librement sans crainte de jugement ou d\'identification.',
+          },
+          item2: {
+            title: 'Sécurité',
+            desc: 'Notre système de modération IA garantit un environnement bienveillant et respectueux pour tous.',
+          },
+          item3: {
+            title: 'Communauté',
+            desc: 'De vraies personnes, un vrai soutien. Nous croyons au pouvoir de l\'empathie et de la compréhension collectives.',
+          },
+        },
+        features: {
+          intro: 'Ce qui rend calme2me spéciale:',
+          item1: 'Partagez vos problèmes anonymement avec une communauté bienveillante',
+          item2: 'Contenu modéré par IA pour maintenir un espace sûr',
+          item3: 'Mises à jour en temps réel et retours instantanés de la communauté',
+          item4: 'Support multilingue pour l\'accessibilité mondiale',
+          item5: 'Réagir aux messages pour montrer votre soutien et empathie',
+          item6: 'Rejoignez notre canal WhatsApp pour une connexion communautaire plus étroite',
+        },
+        cta: {
+          title: 'Rejoignez Notre Communauté',
+          content: 'Prêt à partager votre histoire et soutenir les autres? Rejoignez des milliers de personnes qui trouvent du réconfort et de la force grâce à calme2me.',
+          button: 'Partager Votre Histoire',
+        },
+      },
+      privacy: {
+        title: 'Politique de confidentialité',
+        lastUpdated: 'Dernière mise à jour : 12 février 2026',
+        intro: {
+          title: 'Introduction',
+          content: 'Chez calme2me, nous prenons votre vie privée au sérieux. Cette politique explique comment nous collectons, utilisons et protégeons vos informations personnelles lorsque vous utilisez notre plateforme de soutien anonyme.',
+        },
+        dataCollection: {
+          title: 'Collecte de données',
+          content: 'Nous collectons un minimum de données pour fournir notre service :',
+          item1: 'Les pseudos anonymes que vous choisissez',
+          item2: 'Les messages et commentaires que vous publiez',
+          item3: 'Des données techniques comme les adresses IP à des fins de sécurité',
+        },
+        dataUsage: {
+          title: 'Utilisation de vos données',
+          content: 'Vos données sont utilisées pour :',
+          item1: 'Afficher vos messages et commentaires à la communauté',
+          item2: 'Modérer le contenu avec l\'IA pour maintenir un environnement sûr',
+          item3: 'Améliorer notre service et assurer la sécurité de la plateforme',
+        },
+        aiModeration: {
+          title: 'Modération par IA',
+          content: 'Tous les messages sont automatiquement vérifiés par IA avant publication pour détecter et prévenir le contenu nuisible. Ce processus est automatisé et aide à maintenir un environnement bienveillant.',
+        },
+        anonymity: {
+          title: 'Anonymat',
+          content: 'Nous n\'exigeons ni ne stockons d\'informations d\'identification personnelles (nom, email, téléphone) pour les utilisateurs réguliers. Votre pseudo choisi est le seul identifiant visible par les autres. Cependant, des données techniques comme les adresses IP peuvent être enregistrées à des fins de sécurité.',
+        },
+        cookies: {
+          title: 'Cookies et stockage local',
+          content: 'Nous utilisons le stockage local du navigateur pour sauvegarder votre pseudo et vos préférences linguistiques. Aucun cookie de suivi n\'est utilisé à des fins publicitaires.',
+        },
+        rights: {
+          title: 'Vos droits',
+          content: 'Vous avez le droit d\'accéder, modifier ou supprimer tout contenu que vous avez publié. La plateforme étant anonyme, vous contrôlez votre propre pseudo et vos messages.',
+        },
+        contact: {
+          title: 'Nous contacter',
+          content: 'Pour toute question concernant cette politique de confidentialité, veuillez nous contacter via notre chaîne WhatsApp.',
+        },
+      },
+      terms: {
+        title: 'Conditions d\'utilisation',
+        lastUpdated: 'Dernière mise à jour : 12 février 2026',
+        acceptance: {
+          title: 'Acceptation des conditions',
+          content: 'En accédant et en utilisant calme2me, vous acceptez d\'être lié par ces conditions d\'utilisation. Si vous n\'êtes pas d\'accord, veuillez ne pas utiliser notre plateforme.',
+        },
+        service: {
+          title: 'Description du service',
+          content: 'calme2me est une plateforme de soutien anonyme en temps réel où les utilisateurs peuvent partager leurs problèmes et recevoir le soutien de la communauté. Tout le contenu est modéré par IA avant publication.',
+        },
+        userConduct: {
+          title: 'Conduite des utilisateurs',
+          content: 'Vous acceptez de NE PAS :',
+          item1: 'Publier du contenu haineux, violent ou discriminatoire',
+          item2: 'Harceler, menacer ou intimider d\'autres utilisateurs',
+          item3: 'Partager des informations personnelles vous concernant ou concernant d\'autres',
+          item4: 'Publier du spam, de la publicité ou du contenu non pertinent',
+          item5: 'Tenter de contourner notre système de modération par IA',
+        },
+        moderation: {
+          title: 'Modération du contenu',
+          content: 'Tous les messages sont vérifiés par IA avant publication. Nous nous réservons le droit de supprimer tout contenu qui viole ces conditions ou est jugé inapproprié. Les modérateurs peuvent également examiner et supprimer manuellement le contenu.',
+        },
+        anonymity: {
+          title: 'Anonymat et pseudos',
+          content: 'Les utilisateurs doivent choisir un pseudo anonyme. Vous êtes responsable du contenu que vous publiez sous votre pseudo. Ne partagez pas d\'informations personnelles qui pourraient vous identifier ou identifier d\'autres personnes.',
+        },
+        liability: {
+          title: 'Limitation de responsabilité',
+          content: 'calme2me est une plateforme de soutien entre pairs et ne remplace pas les services professionnels de santé mentale. Nous ne sommes pas responsables des conseils ou du soutien fournis par d\'autres utilisateurs. En cas d\'urgence, veuillez contacter les services professionnels appropriés.',
+        },
+        termination: {
+          title: 'Résiliation',
+          content: 'Nous nous réservons le droit de restreindre ou de résilier l\'accès aux utilisateurs qui violent ces conditions ou adoptent un comportement nuisible.',
+        },
+        changes: {
+          title: 'Modifications des conditions',
+          content: 'Nous pouvons mettre à jour ces conditions de temps à autre. L\'utilisation continue de la plateforme constitue l\'acceptation des conditions mises à jour.',
+        },
+        contact: {
+          title: 'Contact',
+          content: 'Pour toute question concernant ces conditions, contactez-nous via notre chaîne WhatsApp.',
+        },
+      },
+    },
+  },
+};
+
+i18n.use(initReactI18next).init({
+  resources,
+  lng: localStorage.getItem('lang') || 'fr',
+  fallbackLng: 'fr',
+  interpolation: {
+    escapeValue: false,
+  },
+});
+
+export default i18n;
