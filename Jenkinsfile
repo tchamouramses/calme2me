@@ -158,7 +158,7 @@ pipeline {
                         fi
                         
                         # Stop existing containers
-                        docker-compose -f $COMPOSE_FILE down || true
+                        docker compose -f $COMPOSE_FILE down || true
                         
                         # Export all environment variables for docker-compose
                         export APP_KEY="${APP_KEY}"
@@ -203,7 +203,7 @@ pipeline {
                         done
                         
                         # Check database connectivity
-                        docker-compose ps | g on ${ENVIRONMENT}..."
+                        docker compose ps | g on ${ENVIRONMENT}..."
                     sh '''
                         # Determine backend port
                         if [ "${ENVIRONMENT}" = "production" ] || [ "${ENVIRONMENT}" = "staging" ]; then
@@ -220,7 +220,7 @@ pipeline {
                         
                         # Test database access
                         echo "Testing database access..."
-                        docker-compose exec -T backend php artisan tinker --execute "echo 'DB Connected';" || echo "⚠ Database connection failed"
+                        docker compose exec -T backend php artisan tinker --execute "echo 'DB Connected';" || echo "⚠ Database connection failed"
                         
                         # Test WebSocket connection (non-critical)
                         echo "Testing WebSocket connection..."
@@ -280,7 +280,7 @@ pipeline {
             echo "Deployment failed!"
             sh '''
                 # Rollback if needed
-                docker-compose -f docker-compose.yml down || true
+                docker compose -f docker-compose.yml down || true
             '''
             // Add notification here
         }
