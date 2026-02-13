@@ -12,12 +12,6 @@
 ### 1. Create Jenkins Credentials
 
 ```groovy
-// Docker Registry Credentials
-- ID: docker-credentials
-- Type: Username with password
-- Username: <docker-registry-user>
-- Password: <docker-registry-token>
-
 // Application Keys (for each environment)
 - ID: app-key-development
 - ID: app-key-staging
@@ -67,16 +61,9 @@ export APP_KEY=$(cat .env.production | grep APP_KEY)
 docker-compose -f docker-compose.yml up -d
 ```
 
-## Docker Image Registry
+## Docker Images
 
-Push images to your registry:
-
-```bash
-docker tag calme2me-frontend:latest your-registry.com/calme2me-frontend:latest
-docker tag calme2me-backend:latest your-registry.com/calme2me-backend:latest
-docker push your-registry.com/calme2me-frontend:latest
-docker push your-registry.com/calme2me-backend:latest
-```
+No registry is required. Images are built locally by Docker Compose or the Jenkins pipeline.
 
 ## Monitoring & Logging
 
@@ -177,8 +164,6 @@ QUEUE_CONNECTION=sync
 SESSION_DRIVER=cookie
 LARAVEL_REVERB_HOST=0.0.0.0
 LARAVEL_REVERB_PORT=8080
-DOCKER_REGISTRY=your-registry.com
-DOCKER_TAG=latest
 ```
 
 ## Troubleshooting
