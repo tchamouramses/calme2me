@@ -30,7 +30,7 @@ pipeline {
                     ]
 
                     bparams.each { key, value ->
-                        sh "sed -i 's|${key}|${value}|g' .env docker-compose.yaml storage/app/firebase/funeat.json"
+                        sh "sed -i 's|${key}|${value}|g' .env docker-compose.yml"
                     }
                 }
             }
