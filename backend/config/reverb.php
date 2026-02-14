@@ -11,7 +11,10 @@ return [
             'pulse_ingest_interval' => env('REVERB_PULSE_INGEST_INTERVAL', 15),
             'telescope_ingest_interval' => env('REVERB_TELESCOPE_INGEST_INTERVAL', 15),
             'options' => [
-                'tls' => [],
+                'tls' => env('REVERB_SCHEME') === 'https' ? [
+                    'local_cert' => env('REVERB_CERT_PATH'),
+                    'local_pk' => env('REVERB_KEY_PATH'),
+                ] : [],
             ],
             'max_request_size' => env('REVERB_MAX_REQUEST_SIZE', 10000),
             'scaling' => [
