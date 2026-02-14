@@ -25,4 +25,5 @@ Route::post('/comments/{comment}/reactions', [CommentReactionController::class, 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/problems', [ProblemController::class, 'adminIndex']);
     Route::patch('/problems/{problem}/status', [ProblemController::class, 'updateStatus']);
+    Route::delete('/problems/{problem}', [ProblemController::class, 'destroy']);
 });

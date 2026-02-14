@@ -61,10 +61,10 @@ function ProblemCard({ problem, pseudo, onToggleComments, showComments, onRequir
         />
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-3">
+      <div className="mt-4 flex flex-col sm:flex-row sm:flex-wrap items-center gap-3">
         <Link
           to={`/problems/${problem.uuid}`}
-          className="rounded-full border border-indigo-200 bg-white/80 px-3 py-1 text-xs font-semibold text-indigo-600 shadow-sm transition hover:bg-indigo-50"
+          className="rounded-full border border-indigo-200 bg-white/80 px-3 py-1 text-xs font-semibold text-indigo-600 shadow-sm transition hover:bg-indigo-50 w-full sm:w-auto text-center"
         >
           {t('feed.openDetails')}
         </Link>

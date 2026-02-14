@@ -94,4 +94,11 @@ class ProblemController extends Controller
 
         return response()->json($problem);
     }
+
+    public function destroy(Problem $problem)
+    {
+        $problem->delete();
+
+        return response()->json(['message' => 'Problem deleted successfully.'], 200);
+    }
 }
