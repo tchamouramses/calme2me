@@ -3,20 +3,23 @@ pipeline {
 
     environment {
         WORKDIR = 'workspace'
+        FRONTEND_DIR = 'frontend'
     }
 
     stages {
         stage('Prepare configs...') {
             steps {
-                script {
-                    sh '''
-                    '''
+                dir("${env.FRONTEND_DIR}") {
+                    script {
+                        sh '''
+                        '''
 
-                    def bparams = [
-                    ]
+                        def bparams = [
+                        ]
 
-                    bparams.each { key, value ->
-                        sh "sed -i 's|${key}|${value}|g' docker-compose.yml"
+                        bparams.each { key, value ->
+                            sh "sed -i 's|${key}|${value}|g' docker-compose.yml"
+                        }
                     }
                 }
             }
@@ -24,7 +27,9 @@ pipeline {
 
         stage('Build modules and deploy services') {
             steps {
-                sh 'docker compose up -d --build'
+                dir("${env.FRONTEND_DIR}") {
+                    sh 'docker compose up -d --build'
+                }
             }
         }
 

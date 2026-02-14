@@ -3,34 +3,37 @@ pipeline {
 
     environment {
         WORKDIR = 'workspace'
+        BACKEND_DIR = 'backend'
     }
 
     stages {
         stage('Prepare configs...') {
             steps {
-                script {
-                    sh '''
-                    cp .env.example .env
-                    '''
+                dir("${env.BACKEND_DIR}") {
+                    script {
+                        sh '''
+                        cp .env.example .env
+                        '''
 
-                    def bparams = [
-                        '<app_env>': "${env.app_env}",
-                        '<app_key>': "${env.app_key}",
-                        '<db_database>': "${env.db_database}",
-                        '<db_username>': "${env.db_username}",
-                        '<db_password>': "${env.db_password}",
-                        '<calme_openai_api_key>': "${env.openai_api_key}",
-                        '<calme_openai_assistant_id>': "${env.openai_assistant_id}",
-                        '<db_root_password>': "${env.db_root_password}",
+                        def bparams = [
+                            '<app_env>': "${env.app_env}",
+                            '<app_key>': "${env.app_key}",
+                            '<db_database>': "${env.db_database}",
+                            '<db_username>': "${env.db_username}",
+                            '<db_password>': "${env.db_password}",
+                            '<calme_openai_api_key>': "${env.openai_api_key}",
+                            '<calme_openai_assistant_id>': "${env.openai_assistant_id}",
+                            '<db_root_password>': "${env.db_root_password}",
 
-                        '<mail_username>': "${env.mail_username}",
-                        '<mail_password>': "${env.mail_password}",
-                        '<reverb_app_key>': "${env.reverb_app_key}",
-                        '<reverb_app_secret>': "${env.reverb_app_secret}",
-                    ]
+                            '<mail_username>': "${env.mail_username}",
+                            '<mail_password>': "${env.mail_password}",
+                            '<reverb_app_key>': "${env.reverb_app_key}",
+                            '<reverb_app_secret>': "${env.reverb_app_secret}",
+                        ]
 
-                    bparams.each { key, value ->
-                        sh "sed -i 's|${key}|${value}|g' .env docker-compose.yml"
+                        bparams.each { key, value ->
+                            sh "sed -i 's|${key}|${value}|g' .env docker-compose.yml"
+                        }
                     }
                 }
             }
@@ -38,7 +41,9 @@ pipeline {
 
         stage('Build modules and deploy services') {
             steps {
-                sh 'docker compose up -d --build'
+                dir("${env.BACKEND_DIR}") {
+                    sh 'docker compose up -d --build'
+                }
             }
         }
 
