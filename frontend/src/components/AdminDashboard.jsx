@@ -59,7 +59,7 @@ export default function AdminDashboard() {
   const copyToWhatsApp = async (problem) => {
     try {
       const url = `${window.location.origin}/problems/${problem.uuid}`;
-      const text = `*De :* ${problem.pseudo}\n${problem.body}\n_Lien : ${url}_`;
+      const text = `${problem.body}\n\n\n*Répondez via le lien:* ${url}`;
       await navigator.clipboard.writeText(text);
       setToast(t('admin.copied'));
     } catch (err) {

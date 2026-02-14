@@ -94,9 +94,9 @@ const resources = {
         actions: 'Actions',
         loading: 'Loading...',
         noProblems: 'No problems found.',
-        copyWhatsApp: 'Copy to WhatsApp',
+        copyWhatsApp: 'Copy',
         copyLink: 'Copy link',
-        copied: 'Copied to WhatsApp format.',
+        copied: 'Message copied.',
         linkCopied: 'Direct link copied.',
         copyFailed: 'Unable to copy.',
         statuses: {
@@ -346,9 +346,9 @@ const resources = {
         actions: 'Actions',
         loading: 'Chargement...',
         noProblems: 'Aucun problème trouvé.',
-        copyWhatsApp: 'Copier vers WhatsApp',
+        copyWhatsApp: 'Copier',
         copyLink: 'Copier le lien',
-        copied: 'Copié au format WhatsApp.',
+        copied: 'Message copié.',
         linkCopied: 'Lien direct copie.',
         copyFailed: 'Impossible de copier.',
         statuses: {
