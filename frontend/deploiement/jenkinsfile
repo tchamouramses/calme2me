@@ -10,14 +10,13 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    cp .env.example .env
                     '''
 
                     def bparams = [
                     ]
 
                     bparams.each { key, value ->
-                        sh "sed -i 's|${key}|${value}|g' .env docker-compose.yml"
+                        sh "sed -i 's|${key}|${value}|g' docker-compose.yml"
                     }
                 }
             }
