@@ -22,8 +22,8 @@ services:
         ID_SERVER_DB_HOST: calme2me-db-server
         ID_SERVER_DB_PORT: 3306
     ports:
-      - "8030:80"
-      - "8321:8080"
+      - "8031:80"
+      - "8322:8080"
     environment:
       - APP_URL=https://api.calme2me.cm
     volumes:
