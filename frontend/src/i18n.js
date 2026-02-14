@@ -124,7 +124,7 @@ const resources = {
         about: 'About',
         privacy: 'Privacy Policy',
         terms: 'Terms of Service',
-        whatsapp: 'Join WhatsApp',
+        whatsapp: 'Join our channel',
         copyright: 'All rights reserved.',
       },
       about: {
@@ -376,7 +376,7 @@ const resources = {
         about: 'À propos',
         privacy: 'Politique de confidentialité',
         terms: 'Conditions d\'utilisation',
-        whatsapp: 'Rejoindre WhatsApp',
+        whatsapp: 'Rejoindre notre chaîne',
         copyright: 'Tous droits réservés.',
       },
       about: {

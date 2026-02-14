@@ -6,8 +6,7 @@ export default function Footer() {
   const { t } = useTranslation();
 
   const handleWhatsAppClick = () => {
-    // Remplacer par votre lien WhatsApp de chaîne
-    window.open('https://chat.whatsapp.com/YOUR_CHANNEL_INVITE_LINK', '_blank');
+    window.open('https://whatsapp.com/channel/0029Vb7VediDTkK6gNcVq50a', '_blank');
   };
 
   return (

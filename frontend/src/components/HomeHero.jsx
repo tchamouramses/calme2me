@@ -1,11 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
 export default function HomeHero({ onOpenProblemModal }) {
   const { t } = useTranslation();
 
   const handleWhatsAppClick = () => {
-    window.open('https://chat.whatsapp.com/YOUR_CHANNEL_INVITE_LINK', '_blank');
+    window.open('https://whatsapp.com/channel/0029Vb7VediDTkK6gNcVq50a', '_blank');
   };
 
   return (
@@ -23,21 +22,13 @@ export default function HomeHero({ onOpenProblemModal }) {
       </div>
 
       <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={onOpenProblemModal}
-            className="rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-300/40 transition hover:bg-indigo-600"
-          >
-            {t('home.openProblemModal')}
-          </button>
-          <Link
-            to="/myself"
-            className="rounded-full border border-indigo-200 bg-white/80 px-6 py-3 text-sm font-semibold text-indigo-600 shadow-sm transition hover:bg-indigo-50"
-          >
-            {t('home.directProblemPage')}
-          </Link>
-        </div>
+        <button
+          type="button"
+          onClick={onOpenProblemModal}
+          className="rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-300/40 transition hover:bg-indigo-600 w-fit"
+        >
+          {t('home.openProblemModal')}
+        </button>
         
         <button
           type="button"
