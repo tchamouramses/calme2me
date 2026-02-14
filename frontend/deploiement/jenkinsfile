@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    environment {
+        WORKDIR = 'workspace'
+    }
+
+    stages {
+        stage('Prepare configs...') {
+            steps {
+                script {
+                    sh '''
+                    cp .env.example .env
+                    '''
+
+                    def bparams = [
+                    ]
+
+                    bparams.each { key, value ->
+                        sh "sed -i 's|${key}|${value}|g' .env docker-compose.yml"
+                    }
+                }
+            }
+        }
+
+        stage('Build modules and deploy services') {
+            steps {
+                sh 'docker compose up -d --build'
+            }
+        }
+
+        stage('Post-build cleanup') {
+            steps {
+                sh 'rm -rf ${WORKDIR}'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}

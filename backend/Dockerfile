@@ -1,49 +1,47 @@
-# Backend Dockerfile
-FROM php:8.2-fpm-alpine
+FROM php:8.4-apache
 
-WORKDIR /app
+ARG ID_SERVER_DB_HOST
+ARG ID_SERVER_DB_PORT
+ENV ID_SERVER_DB_HOST=${ID_SERVER_DB_HOST}
+ENV ID_SERVER_DB_PORT=${ID_SERVER_DB_PORT}
+ENV TZ=UTC
 
-# Install system dependencies
-RUN apk add --no-cache \
-    git \
-    curl \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
-    jpegoptim \
-    optipng \
-    pngquant \
-    gifsicle \
-    mysql-client
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -i "s|/var/www/html|${APACHE_DOCUMENT_ROOT}|g" /etc/apache2/sites-available/000-default.conf && \
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    zip unzip git curl netcat-traditional libpng-dev libjpeg-dev libfreetype6-dev libicu-dev \
+    libonig-dev libxml2-dev libzip-dev libssl-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd mbstring pdo pdo_mysql zip opcache bcmath intl pcntl sockets && \
+    a2enmod rewrite && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
+RUN apt-get update && apt-get install -y curl
+RUN echo "upload_max_filesize = 50M" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "post_max_size = 50M" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "max_execution_time = 300" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "max_input_time = 300" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "memory_limit = 256M" >> /usr/local/etc/php/conf.d/uploads.ini
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy project files
+WORKDIR /var/www/html
 COPY . .
+RUN composer install --no-interaction --no-dev --prefer-dist && \
+    php artisan optimize && \
+    php artisan storage:link
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Set proper permissions
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Generate application key
-RUN php artisan key:generate || true
-
-# Run migrations
-RUN php artisan migrate --force || true
-
-# Expose port
-EXPOSE 9000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD php artisan tinker --execute "echo 'OK';" || exit 1
-
-# Start PHP-FPM
-CMD ["php-fpm"]
+EXPOSE 80
+CMD sh -c "echo 'Waiting for database...'; \
+    until nc -z -v -w30 $ID_SERVER_DB_HOST $ID_SERVER_DB_PORT; do sleep 5; done; \
+    echo 'Database is up!'; \
+    php artisan migrate --force; \
+    php artisan storage:link; \
+    echo 'Starting Laravel Reverb...'; \
+    php artisan reverb:start --debug -q > /var/log/reverb.log 2>&1 & \
+    tail -f /var/log/queue.log & \
+    exec apache2-foreground"

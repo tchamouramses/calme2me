@@ -1,0 +1,35 @@
+services:
+  calme2me-db-server:
+    image: 'mysql:lts'
+    container_name: calme2me-db-server
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: <db_root_password>
+      MYSQL_DATABASE: <db_database>
+      MYSQL_USER: <db_username>
+      MYSQL_PASSWORD: <db_password>
+    volumes:
+      - calme2me_database:/var/lib/mysql
+  calme2me-api:
+    container_name: calme2me-api
+    restart: always
+    depends_on:
+      - calme2me-db-server
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      args:
+        ID_SERVER_DB_HOST: calme2me-db-server
+        ID_SERVER_DB_PORT: 3306
+    ports:
+      - "8030:80"
+      - "8321:8080"
+    environment:
+      - APP_URL=https://api.calme2me.cm
+    volumes:
+      - calme2me_files:/var/www/html/public/storage
+
+volumes:
+  calme2me_database:
+  calme2me_files:
+  redis_data:

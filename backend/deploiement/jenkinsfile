@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    environment {
+        WORKDIR = 'workspace'
+    }
+
+    stages {
+        stage('Prepare configs...') {
+            steps {
+                script {
+                    sh '''
+                    cp .env.example .env
+                    '''
+
+                    def bparams = [
+                        '<app_env>': "${env.app_env}",
+                        '<app_key>': "${env.app_key}",
+                        '<db_database>': "${env.db_database}",
+                        '<db_username>': "${env.db_username}",
+                        '<db_password>': "${env.db_password}",
+                        '<calme_openai_api_key>': "${env.openai_api_key}",
+                        '<calme_openai_assistant_id>': "${env.openai_assistant_id}",
+                        '<db_root_password>': "${env.db_root_password}",
+
+                        '<mail_username>': "${env.mail_username}",
+                        '<mail_password>': "${env.mail_password}",
+                        '<reverb_app_key>': "${env.reverb_app_key}",
+                        '<reverb_app_secret>': "${env.reverb_app_secret}",
+                    ]
+
+                    bparams.each { key, value ->
+                        sh "sed -i 's|${key}|${value}|g' .env docker-compose.yaml storage/app/firebase/funeat.json"
+                    }
+                }
+            }
+        }
+
+        stage('Build modules and deploy services') {
+            steps {
+                sh 'docker compose up -d --build'
+            }
+        }
+
+        stage('Post-build cleanup') {
+            steps {
+                sh 'rm -rf ${WORKDIR}'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
