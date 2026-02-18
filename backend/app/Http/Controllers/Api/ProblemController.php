@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\ProblemPublished;
 use App\Http\Controllers\Controller;
 use App\Models\Problem;
+use App\Models\RejectedMessage;
 use App\Services\OpenAiModerationService;
 use Illuminate\Http\Request;
 
@@ -60,6 +61,20 @@ class ProblemController extends Controller
 
         $moderationResult = $moderation->moderate('CONFESSION', $data['body']);
         if (!$moderationResult['approved']) {
+            RejectedMessage::create([
+                'type' => 'CONFESSION',
+                'pseudo' => $data['pseudo'],
+                'body' => $data['body'],
+                'problem_id' => null,
+                'problem_uuid' => null,
+                'reason' => $moderationResult['reason'],
+                'assistant_decision' => $moderationResult['decision'] ?? null,
+                'toxicity_score' => $moderationResult['toxicity_score'] ?? null,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'assistant_payload' => $moderationResult['assistant_payload'] ?? null,
+            ]);
+
             return response()->json([
                 'message' => __('messages.moderation.rejected'),
                 'reason' => $moderationResult['reason'],

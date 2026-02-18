@@ -10,7 +10,7 @@ class OpenAiModerationService
     {
     }
 
-    public function moderate( string $type = 'COMMENTAIRE', string $problem, string $comment = null): array
+    public function moderate(string $type = 'COMMENTAIRE', string $problem, string $comment = null): array
     {
         $assistantId = config('services.openai.assistant_id');
         if (!$assistantId) {
@@ -19,6 +19,7 @@ class OpenAiModerationService
                 'reason' => __('messages.moderation.unavailable'),
                 'toxicity_score' => 10,
                 'decision' => 'REJECTED',
+                'assistant_payload' => null,
             ];
         }
 
@@ -43,6 +44,7 @@ class OpenAiModerationService
                 'reason' => __('messages.moderation.failed'),
                 'toxicity_score' => 10,
                 'decision' => 'REJECTED',
+                'assistant_payload' => null,
             ];
         }
 
@@ -53,6 +55,7 @@ class OpenAiModerationService
                 'reason' => __('messages.moderation.failed'),
                 'toxicity_score' => 10,
                 'decision' => 'REJECTED',
+                'assistant_payload' => null,
             ];
         }
 
@@ -63,6 +66,7 @@ class OpenAiModerationService
                 'reason' => __('messages.moderation.failed'),
                 'toxicity_score' => 10,
                 'decision' => 'REJECTED',
+                'assistant_payload' => null,
             ];
         }
 
@@ -73,6 +77,7 @@ class OpenAiModerationService
             'reason' => (string) ($payload['reasoning'] ?? ''),
             'toxicity_score' => (int) ($payload['toxicity_score'] ?? 0),
             'decision' => $payload['decision'],
+            'assistant_payload' => $payload,
         ];
     }
 

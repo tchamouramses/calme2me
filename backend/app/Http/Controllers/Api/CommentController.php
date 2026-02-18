@@ -6,6 +6,7 @@ use App\Events\CommentCreated;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Problem;
+use App\Models\RejectedMessage;
 use App\Services\OpenAiModerationService;
 use Illuminate\Http\Request;
 
@@ -30,6 +31,20 @@ class CommentController extends Controller
 
         $moderationResult = $moderation->moderate('COMMENTAIRE', $problem->body, $data['body']);
         if (!$moderationResult['approved']) {
+            RejectedMessage::create([
+                'type' => 'COMMENTAIRE',
+                'pseudo' => $data['pseudo'],
+                'body' => $data['body'],
+                'problem_id' => $problem->id,
+                'problem_uuid' => $problem->uuid,
+                'reason' => $moderationResult['reason'],
+                'assistant_decision' => $moderationResult['decision'] ?? null,
+                'toxicity_score' => $moderationResult['toxicity_score'] ?? null,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'assistant_payload' => $moderationResult['assistant_payload'] ?? null,
+            ]);
+
             return response()->json([
                 'message' => __('messages.moderation.rejected'),
                 'reason' => $moderationResult['reason'],

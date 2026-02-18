@@ -5,12 +5,29 @@ const resources = {
   en: {
     translation: {
       app: {
+        tabs: {
+          problems: 'Publications',
+          rejections: 'Messages rejetes',
+        },
         title: 'Real-time mental wellness',
         brand: 'calme2me',
       },
       tabs: {
         feed: 'Live feed',
         admin: 'Admin',
+        noRejections: 'Aucun message rejete trouve.',
+        rejectionType: 'Type',
+        rejectionBody: 'Message',
+        rejectionReason: 'Raison',
+        rejectionIp: 'IP',
+        rejectionDate: 'Date',
+        rejectionLink: 'Lien probleme',
+        unknownPseudo: 'Anonyme',
+        rejectionTypes: {
+          confession: 'Confession',
+          commentaire: 'Commentaire',
+          unknown: 'Inconnu',
+        },
       },
       home: {
         tagline: 'Anonymous support, live and safe',
@@ -88,12 +105,29 @@ const resources = {
       admin: {
         title: 'Admin dashboard',
         description: 'Review incoming posts, publish the best ones, or archive the rest.',
+        tabs: {
+          problems: 'Problems',
+          rejections: 'Rejected messages',
+        },
         pseudo: 'Pseudo',
         titleCol: 'Title',
         status: 'Status',
         actions: 'Actions',
         loading: 'Loading...',
         noProblems: 'No problems found.',
+        noRejections: 'No rejected messages found.',
+        rejectionType: 'Type',
+        rejectionBody: 'Message',
+        rejectionReason: 'Reason',
+        rejectionIp: 'IP',
+        rejectionDate: 'Date',
+        rejectionLink: 'Problem link',
+        unknownPseudo: 'Anonymous',
+        rejectionTypes: {
+          confession: 'Confession',
+          commentaire: 'Comment',
+          unknown: 'Unknown',
+        },
         copyWhatsApp: 'Copy',
         copyLink: 'Copy link',
         copied: 'Message copied.',

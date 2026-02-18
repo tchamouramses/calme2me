@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\CommentReactionController;
 use App\Http\Controllers\Api\ProblemController;
+use App\Http\Controllers\Api\RejectedMessageController;
 use App\Http\Controllers\Api\ProblemReactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ Route::post('/comments/{comment}/reactions', [CommentReactionController::class, 
 // Admin routes (protected)
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/problems', [ProblemController::class, 'adminIndex']);
+    Route::get('/admin/rejections', [RejectedMessageController::class, 'index']);
     Route::patch('/problems/{problem}/status', [ProblemController::class, 'updateStatus']);
     Route::delete('/problems/{problem}', [ProblemController::class, 'destroy']);
 });
