@@ -23,7 +23,7 @@ class OpenAiModerationService
         }
 
         $prompt = $type === 'COMMENTAIRE'
-            ? "TYPE: {$type} / CONFESSION: {$problem} / COMMENT: {$comment}";
+            ? "TYPE: {$type} / CONFESSION: {$problem} / COMMENT: {$comment}"
             : "TYPE: {$type} / CONFESSION: {$problem}";
 
         $thread = $this->client->threads()->create([]);
