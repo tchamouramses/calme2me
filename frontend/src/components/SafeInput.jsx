@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../api';
+import ModerationModal from './ModerationModal';
 
 export default function SafeInput({ endpoint, pseudo, onSuccess, onRequirePseudo }) {
   const { t } = useTranslation();
@@ -9,6 +10,7 @@ export default function SafeInput({ endpoint, pseudo, onSuccess, onRequirePseudo
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [reason, setReason] = useState('');
+  const [isModerationModalOpen, setIsModerationModalOpen] = useState(false);
   const canSubmit = Boolean(pseudo && pseudo.trim());
 
   const handleSubmit = async (event) => {
@@ -33,7 +35,11 @@ export default function SafeInput({ endpoint, pseudo, onSuccess, onRequirePseudo
       onSuccess?.(response.data);
     } catch (err) {
       setError(err.response?.data?.message || t('errors.network'));
-      setReason(err.response?.data?.reason || '');
+      const reasonText = err.response?.data?.reason || '';
+      setReason(reasonText);
+      if (reasonText) {
+        setIsModerationModalOpen(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -111,6 +117,12 @@ export default function SafeInput({ endpoint, pseudo, onSuccess, onRequirePseudo
       <p className="mt-4 text-xs text-slate-500">
         {t('input.disclaimer')}
       </p>
+
+      <ModerationModal
+        isOpen={isModerationModalOpen}
+        onClose={() => setIsModerationModalOpen(false)}
+        reason={reason}
+      />
     </form>
   );
 }

@@ -126,6 +126,13 @@ const resources = {
         network: 'Network error. Please try again.',
         updateStatus: 'Unable to update status.',
       },
+      moderation: {
+        rejected: 'Content Review',
+        title: 'Your message was not published',
+        reason: 'Reason:',
+        disclaimer: 'Our AI moderation system ensures that all comments are constructive and respectful. If you think this was a mistake, you can try again with a different message.',
+        understand: 'I understand',
+      },
       footer: {
         tagline: 'Anonymous support in real time',
         about: 'About',
@@ -384,6 +391,13 @@ const resources = {
       errors: {
         network: 'Erreur réseau. Veuillez réessayer.',
         updateStatus: 'Impossible de mettre à jour le statut.',
+      },
+      moderation: {
+        rejected: 'Révision du contenu',
+        title: 'Votre message n\'a pas été publié',
+        reason: 'Raison :',
+        disclaimer: 'Notre système de modération par IA garantit que tous les commentaires sont constructifs et respectueux. Si vous pensez que c\'est une erreur, vous pouvez réessayer avec un message différent.',
+        understand: 'J\'ai compris',
       },
       footer: {
         tagline: 'Soutien anonyme en temps réel',

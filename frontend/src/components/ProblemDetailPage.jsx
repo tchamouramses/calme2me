@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import api from '../api';
 import ReactionBar from './ReactionBar';
+import ModerationModal from './ModerationModal';
 import { formatDate, formatRelativeTime } from '../utils/dateFormatter';
 
 export default function ProblemDetailPage({ pseudo, onRequirePseudo }) {
@@ -18,6 +19,8 @@ export default function ProblemDetailPage({ pseudo, onRequirePseudo }) {
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [commentError, setCommentError] = useState('');
+  const [commentReason, setCommentReason] = useState('');
+  const [isModerationModalOpen, setIsModerationModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const canComment = Boolean(pseudo && pseudo.trim());
 
@@ -105,6 +108,7 @@ export default function ProblemDetailPage({ pseudo, onRequirePseudo }) {
 
     setSubmitting(true);
     setCommentError('');
+    setCommentReason('');
 
     try {
       await api.post(`/api/problems/${problem.id}/comments`, {
@@ -113,7 +117,13 @@ export default function ProblemDetailPage({ pseudo, onRequirePseudo }) {
       });
       setComment('');
     } catch (err) {
-      setCommentError(err.response?.data?.message || t('errors.network'));
+      const errorMessage = err.response?.data?.message || t('errors.network');
+      const reasonText = err.response?.data?.reason || '';
+      setCommentError(errorMessage);
+      setCommentReason(reasonText);
+      if (reasonText) {
+        setIsModerationModalOpen(true);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -251,6 +261,12 @@ export default function ProblemDetailPage({ pseudo, onRequirePseudo }) {
           </div>
         </article>
       )}
+
+      <ModerationModal
+        isOpen={isModerationModalOpen}
+        onClose={() => setIsModerationModalOpen(false)}
+        reason={commentReason}
+      />
     </section>
   );
 }

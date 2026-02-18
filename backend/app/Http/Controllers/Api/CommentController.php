@@ -28,7 +28,7 @@ class CommentController extends Controller
             'body' => 'required|string|max:2000',
         ]);
 
-        $moderationResult = $moderation->moderate($data['body']);
+        $moderationResult = $moderation->moderate('COMMENTAIRE', $problem->body, $data['body']);
         if (!$moderationResult['approved']) {
             return response()->json([
                 'message' => __('messages.moderation.rejected'),

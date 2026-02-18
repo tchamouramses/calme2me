@@ -10,20 +10,26 @@ class OpenAiModerationService
     {
     }
 
-    public function moderate(string $text): array
+    public function moderate( string $type = 'COMMENTAIRE', string $problem, string $comment = null): array
     {
         $assistantId = config('services.openai.assistant_id');
         if (!$assistantId) {
             return [
                 'approved' => false,
                 'reason' => __('messages.moderation.unavailable'),
+                'toxicity_score' => 10,
+                'decision' => 'REJECTED',
             ];
         }
+
+        $prompt = $type === 'COMMENTAIRE'
+            ? "TYPE: {$type} / CONFESSION: {$problem} / COMMENT: {$comment}";
+            : "TYPE: {$type} / CONFESSION: {$problem}";
 
         $thread = $this->client->threads()->create([]);
         $this->client->threads()->messages()->create($thread->id, [
             'role' => 'user',
-            'content' => $text,
+            'content' => $prompt,
         ]);
 
         $run = $this->client->threads()->runs()->create($thread->id, [
@@ -35,6 +41,8 @@ class OpenAiModerationService
             return [
                 'approved' => false,
                 'reason' => __('messages.moderation.failed'),
+                'toxicity_score' => 10,
+                'decision' => 'REJECTED',
             ];
         }
 
@@ -43,20 +51,28 @@ class OpenAiModerationService
             return [
                 'approved' => false,
                 'reason' => __('messages.moderation.failed'),
+                'toxicity_score' => 10,
+                'decision' => 'REJECTED',
             ];
         }
 
         $payload = json_decode($content, true);
-        if (!is_array($payload) || !array_key_exists('approved', $payload)) {
+        if (!is_array($payload) || !array_key_exists('decision', $payload)) {
             return [
                 'approved' => false,
                 'reason' => __('messages.moderation.failed'),
+                'toxicity_score' => 10,
+                'decision' => 'REJECTED',
             ];
         }
 
+        $approved = $payload['decision'] === 'APPROVED';
+
         return [
-            'approved' => (bool) $payload['approved'],
-            'reason' => (string) ($payload['reason'] ?? ''),
+            'approved' => $approved,
+            'reason' => (string) ($payload['reasoning'] ?? ''),
+            'toxicity_score' => (int) ($payload['toxicity_score'] ?? 0),
+            'decision' => $payload['decision'],
         ];
     }
 

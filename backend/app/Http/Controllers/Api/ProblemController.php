@@ -58,7 +58,7 @@ class ProblemController extends Controller
             'is_public' => 'boolean',
         ]);
 
-        $moderationResult = $moderation->moderate($data['body']);
+        $moderationResult = $moderation->moderate('CONFESSION', $data['body']);
         if (!$moderationResult['approved']) {
             return response()->json([
                 'message' => __('messages.moderation.rejected'),
