@@ -18,14 +18,15 @@ return new class extends Migration
             $table->text('reason')->nullable();
             $table->string('assistant_decision', 32)->nullable();
             $table->unsignedTinyInteger('toxicity_score')->nullable();
-            $table->string('ip_address', 45)->nullable();
+            $table->string('ip_hash', 64)->nullable();
+            $table->text('ip_encrypted')->nullable();
             $table->string('user_agent', 255)->nullable();
             $table->json('assistant_payload')->nullable();
             $table->timestamps();
 
             $table->index(['type', 'problem_id']);
             $table->index('problem_uuid');
-            $table->index('ip_address');
+            $table->index('ip_hash');
         });
     }
 

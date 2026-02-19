@@ -2,30 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Crypt;
 
-class RejectedMessage extends Model
+class SuspendedIp extends Model
 {
     protected $fillable = [
-        'type',
-        'pseudo',
-        'body',
-        'problem_id',
-        'problem_uuid',
-        'reason',
-        'assistant_decision',
-        'toxicity_score',
         'ip_hash',
         'ip_encrypted',
-        'user_agent',
-        'assistant_payload',
+        'reason',
+        'suspended_until',
+        'rejected_message_id',
+        'created_by',
     ];
 
     protected $casts = [
-        'assistant_payload' => 'array',
-        'toxicity_score' => 'integer',
+        'suspended_until' => 'datetime',
     ];
 
     protected $hidden = [
@@ -36,9 +29,14 @@ class RejectedMessage extends Model
         'ip_address',
     ];
 
-    public function problem(): BelongsTo
+    public function rejectedMessage(): BelongsTo
     {
-        return $this->belongsTo(Problem::class);
+        return $this->belongsTo(RejectedMessage::class);
+    }
+
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function getIpAddressAttribute(): ?string

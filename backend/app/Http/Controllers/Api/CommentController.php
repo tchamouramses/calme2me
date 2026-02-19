@@ -9,6 +9,7 @@ use App\Models\Problem;
 use App\Models\RejectedMessage;
 use App\Services\OpenAiModerationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 class CommentController extends Controller
 {
@@ -31,6 +32,7 @@ class CommentController extends Controller
 
         $moderationResult = $moderation->moderate('COMMENTAIRE', $problem->body, $data['body']);
         if (!$moderationResult['approved']) {
+            $ip = $request->ip();
             RejectedMessage::create([
                 'type' => 'COMMENTAIRE',
                 'pseudo' => $data['pseudo'],
@@ -40,7 +42,8 @@ class CommentController extends Controller
                 'reason' => $moderationResult['reason'],
                 'assistant_decision' => $moderationResult['decision'] ?? null,
                 'toxicity_score' => $moderationResult['toxicity_score'] ?? null,
-                'ip_address' => $request->ip(),
+                'ip_hash' => $ip ? hash('sha256', $ip) : null,
+                'ip_encrypted' => $ip ? Crypt::encryptString($ip) : null,
                 'user_agent' => $request->userAgent(),
                 'assistant_payload' => $moderationResult['assistant_payload'] ?? null,
             ]);

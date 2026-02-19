@@ -14,6 +14,10 @@ export default function AdminDashboard() {
   const [rejectionsError, setRejectionsError] = useState('');
   const [toast, setToast] = useState('');
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, problemId: null });
+  const [detailModal, setDetailModal] = useState({ isOpen: false, rejection: null });
+  const [suspendModal, setSuspendModal] = useState({ isOpen: false, rejection: null });
+  const [customMonths, setCustomMonths] = useState('');
+  const [suspending, setSuspending] = useState(false);
   const [activeTab, setActiveTab] = useState('problems');
 
   const statuses = useMemo(() => [
@@ -26,6 +30,12 @@ export default function AdminDashboard() {
     { key: 'problems', label: t('admin.tabs.problems') },
     { key: 'rejections', label: t('admin.tabs.rejections') },
   ], [t]);
+
+  const truncateText = (text, maxLength = 120) => {
+    if (!text) return '-';
+    if (text.length <= maxLength) return text;
+    return `${text.slice(0, maxLength).trim()}...`;
+  };
 
   useEffect(() => {
     let active = true;
@@ -142,6 +152,50 @@ export default function AdminDashboard() {
   const handleDelete = () => {
     if (deleteModal.problemId) {
       deleteProblem(deleteModal.problemId);
+    }
+  };
+
+  const openDetailModal = (rejection) => {
+    setDetailModal({ isOpen: true, rejection });
+  };
+
+  const closeDetailModal = () => {
+    setDetailModal({ isOpen: false, rejection: null });
+  };
+
+  const openSuspendModal = (rejection) => {
+    setCustomMonths('');
+    setSuspendModal({ isOpen: true, rejection });
+  };
+
+  const closeSuspendModal = () => {
+    if (suspending) return;
+    setSuspendModal({ isOpen: false, rejection: null });
+  };
+
+  const suspendFromRejection = async (duration) => {
+    if (!suspendModal.rejection) return;
+
+    const months = duration === 'custom' ? Number(customMonths) : undefined;
+    if (duration === 'custom' && (!months || Number.isNaN(months))) {
+      setToast(t('admin.suspendCustomInvalid'));
+      return;
+    }
+
+    setSuspending(true);
+
+    try {
+      await api.post(`/api/admin/rejections/${suspendModal.rejection.id}/suspend`, {
+        duration,
+        months,
+        reason: suspendModal.rejection.reason || null,
+      });
+      setToast(t('admin.suspendSuccess'));
+      closeSuspendModal();
+    } catch (err) {
+      setToast(err.response?.data?.message || t('admin.suspendFailed'));
+    } finally {
+      setSuspending(false);
     }
   };
 
@@ -375,7 +429,33 @@ export default function AdminDashboard() {
                   </p>
                 </div>
 
-                <p className="mt-3 text-sm text-slate-700 line-clamp-4">{rejection.body}</p>
+                <div className="mt-3">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    {t('admin.rejectionBody')}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => openDetailModal(rejection)}
+                    className="mt-1 text-left text-sm text-slate-700 hover:text-indigo-600"
+                  >
+                    {truncateText(rejection.body, 140)}
+                  </button>
+                </div>
+
+                {rejection.problem?.body && (
+                  <div className="mt-4">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                      {t('admin.rejectionProblem')}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => openDetailModal(rejection)}
+                      className="mt-1 text-left text-sm text-slate-700 hover:text-indigo-600"
+                    >
+                      {truncateText(rejection.problem.body, 140)}
+                    </button>
+                  </div>
+                )}
 
                 <div className="mt-4 rounded-2xl border border-rose-100 bg-rose-50/60 px-3 py-2">
                   <p className="text-xs font-semibold text-rose-600">{t('admin.rejectionReason')}</p>
@@ -393,6 +473,24 @@ export default function AdminDashboard() {
                     </a>
                   )}
                 </div>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => openDetailModal(rejection)}
+                    className="rounded-full border border-indigo-200 bg-white/80 px-4 py-2 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50"
+                  >
+                    {t('admin.viewDetails')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => openSuspendModal(rejection)}
+                    disabled={!rejection.ip_address}
+                    className="rounded-full bg-rose-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-rose-200/40 transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-rose-200"
+                  >
+                    {t('admin.suspend')}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -404,10 +502,12 @@ export default function AdminDashboard() {
                   <th className="px-5 py-4">{t('admin.rejectionType')}</th>
                   <th className="px-5 py-4">{t('admin.pseudo')}</th>
                   <th className="px-5 py-4">{t('admin.rejectionBody')}</th>
+                  <th className="px-5 py-4">{t('admin.rejectionProblem')}</th>
                   <th className="px-5 py-4">{t('admin.rejectionReason')}</th>
                   <th className="px-5 py-4">{t('admin.rejectionIp')}</th>
                   <th className="px-5 py-4">{t('admin.rejectionDate')}</th>
                   <th className="px-5 py-4">{t('admin.rejectionLink')}</th>
+                  <th className="px-5 py-4">{t('admin.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/40">
@@ -420,7 +520,26 @@ export default function AdminDashboard() {
                       {rejection.pseudo || t('admin.unknownPseudo')}
                     </td>
                     <td className="px-5 py-5">
-                      <p className="text-sm text-slate-700 line-clamp-3">{rejection.body}</p>
+                      <button
+                        type="button"
+                        onClick={() => openDetailModal(rejection)}
+                        className="text-left text-sm text-slate-700 hover:text-indigo-600"
+                      >
+                        {truncateText(rejection.body, 120)}
+                      </button>
+                    </td>
+                    <td className="px-5 py-5">
+                      {rejection.problem?.body ? (
+                        <button
+                          type="button"
+                          onClick={() => openDetailModal(rejection)}
+                          className="text-left text-sm text-slate-700 hover:text-indigo-600"
+                        >
+                          {truncateText(rejection.problem.body, 120)}
+                        </button>
+                      ) : (
+                        <span className="text-xs text-slate-400">-</span>
+                      )}
                     </td>
                     <td className="px-5 py-5">
                       <p className="text-xs text-slate-600 line-clamp-3">{rejection.reason || '-'}</p>
@@ -443,12 +562,182 @@ export default function AdminDashboard() {
                         <span className="text-slate-400">-</span>
                       )}
                     </td>
+                    <td className="px-5 py-5 text-xs">
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openDetailModal(rejection)}
+                          className="rounded-full border border-indigo-200 bg-white/80 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50"
+                        >
+                          {t('admin.viewDetails')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openSuspendModal(rejection)}
+                          disabled={!rejection.ip_address}
+                          className="rounded-full bg-rose-500 px-3 py-1.5 text-xs font-semibold text-white shadow-md shadow-rose-200/40 transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-rose-200"
+                        >
+                          {t('admin.suspend')}
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </>
+      )}
+
+      {detailModal.isOpen && detailModal.rejection && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4 backdrop-blur">
+          <div className="w-full max-w-3xl rounded-[32px] border border-white/40 bg-white/95 p-6 shadow-2xl shadow-indigo-200/40">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
+                  {t('admin.rejectionDetails')}
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+                  {detailModal.rejection.pseudo || t('admin.unknownPseudo')}
+                </h2>
+                <p className="mt-1 text-xs text-slate-500">
+                  {t(`admin.rejectionTypes.${detailModal.rejection.type?.toLowerCase?.() || 'unknown'}`)}
+                  {' · '}
+                  {formatDate(detailModal.rejection.created_at, i18n.language)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={closeDetailModal}
+                className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+              >
+                {t('common.close')}
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-5">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  {t('admin.rejectionBody')}
+                </p>
+                <div className="mt-2 rounded-2xl border border-white/60 bg-slate-50/60 px-4 py-3 text-sm text-slate-700">
+                  {detailModal.rejection.body}
+                </div>
+              </div>
+
+              {detailModal.rejection.problem?.body && (
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    {t('admin.rejectionProblem')}
+                  </p>
+                  <div className="mt-2 rounded-2xl border border-white/60 bg-slate-50/60 px-4 py-3 text-sm text-slate-700">
+                    {detailModal.rejection.problem.body}
+                  </div>
+                </div>
+              )}
+
+              <div className="rounded-2xl border border-rose-100 bg-rose-50/60 px-4 py-3">
+                <p className="text-xs font-semibold text-rose-600">{t('admin.rejectionReason')}</p>
+                <p className="mt-1 text-sm text-slate-700">{detailModal.rejection.reason || '-'}</p>
+              </div>
+
+              <div className="flex flex-wrap gap-3 text-xs text-slate-500">
+                <span>{t('admin.rejectionIp')}: {detailModal.rejection.ip_address || '-'}</span>
+                {detailModal.rejection.problem_uuid && (
+                  <a
+                    href={`/problems/${detailModal.rejection.problem_uuid}`}
+                    className="text-indigo-600 hover:text-indigo-700"
+                  >
+                    {t('admin.rejectionLink')}
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {suspendModal.isOpen && suspendModal.rejection && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4 backdrop-blur">
+          <div className="w-full max-w-xl rounded-[32px] border border-white/40 bg-white/95 p-6 shadow-2xl shadow-rose-200/40">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-500">
+                  {t('admin.suspendTitle')}
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+                  {suspendModal.rejection.pseudo || t('admin.unknownPseudo')}
+                </h2>
+                <p className="mt-1 text-sm text-slate-600">
+                  {t('admin.suspendSubtitle')}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={closeSuspendModal}
+                className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                disabled={suspending}
+              >
+                {t('common.close')}
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => suspendFromRejection('1m')}
+                  disabled={suspending}
+                  className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {t('admin.suspendOneMonth')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => suspendFromRejection('6m')}
+                  disabled={suspending}
+                  className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {t('admin.suspendSixMonths')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => suspendFromRejection('lifetime')}
+                  disabled={suspending}
+                  className="rounded-full bg-rose-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-rose-200/50 transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {t('admin.suspendLifetime')}
+                </button>
+              </div>
+
+              <div className="rounded-2xl border border-white/60 bg-slate-50/60 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  {t('admin.suspendCustom')}
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <input
+                    type="number"
+                    min="1"
+                    max="60"
+                    value={customMonths}
+                    onChange={(event) => setCustomMonths(event.target.value)}
+                    className="w-28 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm"
+                    placeholder={t('admin.suspendMonthsPlaceholder')}
+                    disabled={suspending}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => suspendFromRejection('custom')}
+                    disabled={suspending}
+                    className="rounded-full bg-indigo-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-200/50 transition hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {t('admin.suspendApply')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       <ConfirmModal
