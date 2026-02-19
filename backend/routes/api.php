@@ -5,7 +5,6 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\CommentReactionController;
 use App\Http\Controllers\Api\RejectedMessageController;
 use App\Http\Controllers\Api\ProblemController;
-use App\Http\Controllers\Api\RejectedMessageController;
 use App\Http\Controllers\Api\ProblemReactionController;
 use Illuminate\Support\Facades\Route;
 Route::post('/problems', [ProblemController::class, 'store'])->middleware('suspension');
