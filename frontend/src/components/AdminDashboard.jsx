@@ -429,49 +429,13 @@ export default function AdminDashboard() {
                   </p>
                 </div>
 
-                <div className="mt-3">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    {t('admin.rejectionBody')}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => openDetailModal(rejection)}
-                    className="mt-1 text-left text-sm text-slate-700 hover:text-indigo-600"
-                  >
-                    {truncateText(rejection.body, 140)}
-                  </button>
-                </div>
-
-                {rejection.problem?.body && (
-                  <div className="mt-4">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                      {t('admin.rejectionProblem')}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => openDetailModal(rejection)}
-                      className="mt-1 text-left text-sm text-slate-700 hover:text-indigo-600"
-                    >
-                      {truncateText(rejection.problem.body, 140)}
-                    </button>
-                  </div>
-                )}
-
-                <div className="mt-4 rounded-2xl border border-rose-100 bg-rose-50/60 px-3 py-2">
+                <div className="mt-3 rounded-2xl border border-rose-100 bg-rose-50/60 px-3 py-2">
                   <p className="text-xs font-semibold text-rose-600">{t('admin.rejectionReason')}</p>
                   <p className="mt-1 text-xs text-slate-700">{rejection.reason || '-'}</p>
                 </div>
 
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                   <span>{t('admin.rejectionIp')}: {rejection.ip_address || '-'}</span>
-                  {rejection.problem_uuid && (
-                    <a
-                      href={`/problems/${rejection.problem_uuid}`}
-                      className="text-indigo-600 hover:text-indigo-700"
-                    >
-                      {t('admin.rejectionLink')}
-                    </a>
-                  )}
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -480,7 +444,7 @@ export default function AdminDashboard() {
                     onClick={() => openDetailModal(rejection)}
                     className="rounded-full border border-indigo-200 bg-white/80 px-4 py-2 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50"
                   >
-                    {t('admin.viewDetails')}
+                    {t('admin.seeComment')}
                   </button>
                   <button
                     type="button"
@@ -501,12 +465,9 @@ export default function AdminDashboard() {
                 <tr>
                   <th className="px-5 py-4">{t('admin.rejectionType')}</th>
                   <th className="px-5 py-4">{t('admin.pseudo')}</th>
-                  <th className="px-5 py-4">{t('admin.rejectionBody')}</th>
-                  <th className="px-5 py-4">{t('admin.rejectionProblem')}</th>
                   <th className="px-5 py-4">{t('admin.rejectionReason')}</th>
                   <th className="px-5 py-4">{t('admin.rejectionIp')}</th>
                   <th className="px-5 py-4">{t('admin.rejectionDate')}</th>
-                  <th className="px-5 py-4">{t('admin.rejectionLink')}</th>
                   <th className="px-5 py-4">{t('admin.actions')}</th>
                 </tr>
               </thead>
@@ -520,28 +481,6 @@ export default function AdminDashboard() {
                       {rejection.pseudo || t('admin.unknownPseudo')}
                     </td>
                     <td className="px-5 py-5">
-                      <button
-                        type="button"
-                        onClick={() => openDetailModal(rejection)}
-                        className="text-left text-sm text-slate-700 hover:text-indigo-600"
-                      >
-                        {truncateText(rejection.body, 120)}
-                      </button>
-                    </td>
-                    <td className="px-5 py-5">
-                      {rejection.problem?.body ? (
-                        <button
-                          type="button"
-                          onClick={() => openDetailModal(rejection)}
-                          className="text-left text-sm text-slate-700 hover:text-indigo-600"
-                        >
-                          {truncateText(rejection.problem.body, 120)}
-                        </button>
-                      ) : (
-                        <span className="text-xs text-slate-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-5">
                       <p className="text-xs text-slate-600 line-clamp-3">{rejection.reason || '-'}</p>
                     </td>
                     <td className="px-5 py-5 text-xs text-slate-500">
@@ -551,25 +490,13 @@ export default function AdminDashboard() {
                       {formatDate(rejection.created_at, i18n.language)}
                     </td>
                     <td className="px-5 py-5 text-xs">
-                      {rejection.problem_uuid ? (
-                        <a
-                          href={`/problems/${rejection.problem_uuid}`}
-                          className="text-indigo-600 hover:text-indigo-700"
-                        >
-                          {t('admin.rejectionLink')}
-                        </a>
-                      ) : (
-                        <span className="text-slate-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-5 text-xs">
                       <div className="flex flex-wrap gap-2">
                         <button
                           type="button"
                           onClick={() => openDetailModal(rejection)}
                           className="rounded-full border border-indigo-200 bg-white/80 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50"
                         >
-                          {t('admin.viewDetails')}
+                          {t('admin.seeComment')}
                         </button>
                         <button
                           type="button"
