@@ -14,6 +14,7 @@ class CheckSuspendedIp
         if (!$ip) {
             return $next($request);
         }
+        return $next($request);
 
         $ipHash = hash('sha256', $ip);
 
